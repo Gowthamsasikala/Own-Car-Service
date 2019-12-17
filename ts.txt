@@ -1,0 +1,182 @@
+import { Component, OnInit } from '@angular/core';
+import { HomeService } from '../Service/home.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UserregistrationService } from '../Service/userregistration.service';
+import { DatePipe } from '@angular/common';
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  public getvendors: any;
+  public vehicleType: any;
+  public vehicleBrand: any;
+  public vehiclePackage: any;
+  public getUserInfo: any;
+  public uniqueArray: any;
+  public uniquePincodeArray: Array<Object> = new Array<Object>();
+  public userInfo:any;
+  public appointmentForm: FormGroup;
+  public allVendors: Array<Object> = new Array<Object>();
+  constructor(private vendorHomeService: HomeService, private fb: FormBuilder,private profileService:UserregistrationService) { }
+
+  ngOnInit() {
+
+    var info = JSON.parse(sessionStorage.getItem('userinfo'));
+    this.profileService.getUserById(info['userId']).subscribe(data=>{
+      this.userInfo = data;
+      console.log(this.userInfo);
+    });
+    this.vendorHomeService.getAllVendors().subscribe(data => {
+      this.getvendors = data;
+      console.log(this.getvendors);
+    }).add(data => {
+      this.uniqueArray = [];
+      const pincode = this.getvendors.filter(s => {
+        console.log(s.vendorPincode);
+        if (this.uniqueArray.indexOf(s.vendorPincode) === -1) {
+          this.uniqueArray.push(s.vendorPincode);
+        }
+      })
+    }).add(data => {
+      for (const data of this.uniqueArray) {
+        const pincode: Object = new Object();
+        pincode['code'] = data;
+        pincode['Description'] = data;
+        this.uniquePincodeArray.push(pincode);
+      }
+      console.log(this.uniquePincodeArray);
+    })
+    this.vendorHomeService.getVehicleType().subscribe(data => {
+      this.vehicleType = data;
+    });
+    this.vendorHomeService.getVehicleBrand().subscribe(data => {
+      this.vehicleBrand = data;
+    });
+    this.vendorHomeService.getVehiclepackage().subscribe(data => {
+      this.vehiclePackage = data;
+    });
+
+    this.appointmentForm = this.fb.group({
+      appointmentId: ['11'],
+      pincode: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      vehicle: ['', Validators.compose([Validators.required])],
+      vehicleType: ['', Validators.compose([Validators.required])],
+      vehicleBrand: ['', Validators.compose([Validators.required])],
+      vehicleModel: ['', Validators.compose([Validators.required, Validators.pattern("[a-zA-Z 0-9]*")])],
+      packages: ['', Validators.compose([Validators.required])],
+      address: ['', Validators.compose([Validators.required])],
+      landmark: ['', Validators.compose([Validators.required])],
+      pickUpTime: ['', Validators.compose([Validators.required])],
+      appointmentDateTime: ['', Validators.compose([Validators.required])],
+      carBikeNumberPlate: ['', Validators.compose([Validators.required])],
+      status: ['In Progress', Validators.compose([Validators.required])],
+      vendor: this.fb.group({
+        vendorId: ['', Validators.compose([Validators.required])]
+      }),
+      user: this.fb.group({
+        userId: ['']
+      })
+    })
+
+
+  }
+
+  vehicle(type) {
+    console.log(type);
+    this.appointmentForm.patchValue({
+      vehicle: type
+    })
+  }
+
+  changeType(event) {
+    this.appointmentForm.patchValue({
+      vehicleType: event.target.value
+    });
+    
+  }
+
+  changeBrand(event) {
+    this.appointmentForm.patchValue({
+      vehicleBrand: event.target.value
+    });
+  
+
+  }
+
+  changePincode(event) {
+
+    this.appointmentForm.patchValue({
+      pincode: event.target.value
+    });
+    
+    for (const vendor of this.getvendors) {
+      if (this.appointmentForm.get('pincode').value === vendor['vendorPincode']) {
+        const pushVendor: Object = new Object();
+        pushVendor['code'] = vendor['vendorId'];
+        pushVendor['Description'] = vendor['vendorName'];
+        this.allVendors.push(pushVendor);
+      }
+    }
+    console.log(this.allVendors);
+
+  }
+  changePackage(event) {
+    this.appointmentForm.patchValue({
+      packages: event.target.value
+    });
+  }
+
+  changeVendor(event) {
+    this.appointmentForm.patchValue({
+      vendor: {
+        vendorId: event.target.value
+      }
+    });
+  }
+
+
+  update() {
+    this.appointmentForm.patchValue({
+      user:{
+        userId:this.userInfo['userId']
+      }
+    });
+    var pickuptm = new DatePipe('en-US').transform(this.appointmentForm.get('pickUpTime').value,'h:mm:ss a');
+   
+    var appointtm = new DatePipe('en-US').transform(this.appointmentForm.get('appointmentDateTime').value,'dd/MM/yyyy h:mm:ss a');
+   
+    // this.appointmentForm.setValue({
+    //   pickUpTime : pickuptm.toString()
+    // })
+    // this.appointmentForm.setValue({
+    //   appointmentDateTime : appointtm.toString()
+    // })
+    // console.log(this.appointmentForm.get('pickUpTime').value);
+    // console.log(this.appointmentForm.get('appointmentDateTime').value);
+    if (this.appointmentForm.valid) {
+       console.log(this.appointmentForm.value);
+    } else {
+      console.log("Invalid");
+    }
+  }
+
+  get Pincode() { return this.appointmentForm.get('pincode') }
+  get Vehicle() { return this.appointmentForm.get('vehicle') }
+  get VehicleType() { return this.appointmentForm.get('vehicleType') }
+  get VehicleBrand() { return this.appointmentForm.get('vehicleBrand') }
+  get VehicleModel() { return this.appointmentForm.get('vehicleModel') }
+  get Packages() { return this.appointmentForm.get('packages') }
+  get Address() { return this.appointmentForm.get('address') }
+  get Landmark() { return this.appointmentForm.get('landmark') }
+  get Pickuptime() { return this.appointmentForm.get('pickUpTime') }
+  get Appointdatetime() { return this.appointmentForm.get('appointmentDateTime') }
+  get Numberplate() { return this.appointmentForm.get('carBikeNumberPlate') }
+  get Vendors() { return this.appointmentForm.get('vendor').get('vendorId') }
+
+
+
+
+}
