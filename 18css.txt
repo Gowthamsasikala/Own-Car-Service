@@ -1,0 +1,112 @@
+ <span style="display: inline-flex;width: 100%;" *ngIf="Pickuptime.errors?.pickUpTimeMisMatch">
+              <i class="fa fa-exclamation-circle" style="margin-top: 3%;margin-left: 4%;" aria-hidden="true"></i>
+                 <h6 style="color: maroon;font-size: 15px;margin-top: 2%;margin-left: 2%;">Please enter a valid pickup time after 6:00 PM.</h6>
+          </span>
+
+  this.min = new Date();
+    this.onChanges();
+
+  public min:any;
+
+ onChanges():void{
+
+    this.appointmentForm.get('pickUpTime').valueChanges.subscribe(data=>{
+      const pickupdate = new Date(data);
+      if(pickupdate.getHours() >= 18){
+        this.appointmentForm.get('pickUpTime').setErrors(null);
+      }else{
+        this.appointmentForm.get('pickUpTime').setErrors({pickUpTimeMisMatch:true});
+      }
+    });
+  }
+
+
+/* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #ECF0F1;
+}
+
+body .ui-inputtext {
+    font-size: 14px;
+    width: 100% !important;
+    color: #333333;
+    height: 65px;
+    background: transparent;
+    padding: 0.429em;
+    border: 1px solid #a6a6a6;
+    -webkit-transition: border-color 0.2s;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-left: 0px;
+    outline: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom-color: #24c6dc !important;
+    border-bottom-width: 2px;
+    background-color: #ECF0F1 !important;
+    padding: 5% 5% 0% 5% !important;
+    /* background-color: #ECF0F1 ! ; */
+    
+}
+
+.ui-calendar {
+    position: relative;
+    display: inline-block;
+    width: 100% !important;
+}
+
+::placeholder {
+    font-size: 19px !important;
+    color: #999 !important;
+  }
+
+p {
+    margin-top: 0;
+    margin-bottom: 0px !important;
+}
+
+.card {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 15px !important; 
+}
+
+
+
+app.css
+
+.ordertext{
+    text-align: center;
+}
+
+.imgcenter{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.no-items{
+    left: 50%;
+    top:50%;
+    transform: translateX(-50%) and translateY(-50%);
+}
+
+.textunderline:hover{
+text-decoration: underline;
+}
+
+
+
+ {path:'appointments',component:MyappointmentsComponent},
+    {path:'appointments/:current',component:MyappointmentsComponent}

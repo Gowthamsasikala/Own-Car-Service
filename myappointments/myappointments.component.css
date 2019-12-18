@@ -1,0 +1,18 @@
+.ordertext{
+    text-align: center;
+}
+
+.imgcenter{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.no-items{
+    left: 50%;
+    top:50%;
+    transform: translateX(-50%) and translateY(-50%);
+}
+
+.textunderline:hover{
+text-decoration: underline;
+}
