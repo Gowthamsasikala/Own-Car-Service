@@ -8,11 +8,20 @@
     display: flex;
 }
 .no-items{
+    position: fixed;
+    top: 50%;
     left: 50%;
-    top:50%;
-    transform: translateX(-50%) and translateY(-50%);
+    transform: translate(-50%, -50%);
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .textunderline:hover{
 text-decoration: underline;
+}
+
+.marginbottom{
+    margin-bottom: 5%;
 }

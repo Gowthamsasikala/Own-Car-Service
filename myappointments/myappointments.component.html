@@ -1,120 +1,201 @@
 <div class="container-fluid">
 
- <div *ngIf="!clickedcurrentstatus && !clickedinduvidualList">
-  <div class="row">
-    <div class="col-12">
-       <span class="ordertext">
-         <h5 style=" margin-top: 2%;color:#5B86E5;">Order Summary</h5>
-       </span>
+  <div *ngIf="!clickedcurrentstatus && !clickedinduvidualList">
+    <div class="row">
+      <div class="col-12">
+        <span class="ordertext">
+          <h5 style=" margin-top: 2%;color:#5B86E5;">Order Summary</h5>
+        </span>
+      </div>
     </div>
-  </div>
-  <div class="row"  *ngFor="let item of getAllAppointment">
-    <div class="col-12" >
+    <div class="row" *ngFor="let item of getAllAppointment">
+      <div class="col-12">
         <div class="card mb-3" *ngIf="item['status'] != 'In Progress'" style="max-width: 540px;">
-            <div class="row no-gutters">
-              <div class="col-4 imgcenter">
-                <img src="{{item['vendor']['vendorImgUrl']}}" class="card-img" alt="..." width="100" >
-              </div>
-              <div class="col-8">
-                <div class="card-body">
-                  <h5 class="card-title">{{item['vendor']['vendorName']}}</h5>
-                  <p class="card-text">
-                   <b> Address:</b> {{item['vendor']['vendorAddress']}} </p>
-                  <p><b>Vehicle Brand:</b> {{item['vehicleBrand']}} </p> 
-                  <p><b>Vehicle Model: </b> {{item['vehicleModel']}} </p>
-                  <p class="card-text"><small class="text-muted">Appointed on {{item['appointmentDateTime']}}</small></p>
-                </div>
+          <div class="row no-gutters">
+            <div class="col-4 imgcenter">
+              <img src="{{item['vendor']['vendorImgUrl']}}" class="card-img" alt="..." width="100">
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title">{{item['vendor']['vendorName']}}</h5>
+                <p class="card-text">
+                  <b> Address:</b> {{item['vendor']['vendorAddress']}} </p>
+                <p>
+                  <b>Vehicle Brand:</b> {{item['vehicleBrand']}} </p>
+                <p>
+                  <b>Vehicle Model: </b> {{item['vehicleModel']}} </p>
+                <p class="card-text">
+                  <small class="text-muted">Appointed on {{item['appointmentDateTime']}}</small>
+                </p>
               </div>
             </div>
           </div>
-    </div>
-  </div>
-</div>
-  <!-- <div class="row" *ngIf="getAllAppointment === undefined">
-    <div class="col-12">
-       <div class="no-items">
-          <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
-          <p>No Appointment has been done so far..</p>
-       </div>
-    </div>
-  </div> -->
-
-
-<div *ngIf="clickedcurrentstatus && !clickedinduvidualList">
-    <div class="row">
-        <div class="col-12">
-           <span class="ordertext">
-             <h5 style=" margin-top: 2%;color:#5B86E5;">Current Appointment Status</h5>
-           </span>
         </div>
       </div>
-      <div class="row"  *ngFor="let item of getAllAppointment,let i = index">
-          <div class="col-12" >
-              <div class="card mb-3" *ngIf="item['status'] == 'In Progress'" style="max-width: 540px;">
-                  <div class="row no-gutters">
-                    <div class="col-4 imgcenter">
-                      <img src="{{item['vendor']['vendorImgUrl']}}" class="card-img" alt="...">
-                    </div>
-                    <div class="col-8">
-                      <div class="card-body">
-                        <h5 class="card-title textunderline" (click)="a(i)" >{{item['vendor']['vendorName']}}</h5>
-                        <p class="card-text">
-                         <b> Address:</b> {{item['vendor']['vendorAddress']}} </p>
-                        <p><b>Vehicle Brand:</b> {{item['vehicleBrand']}} </p> 
-                        <p><b>Vehicle Model: </b> {{item['vehicleModel']}} </p>
-                        <p class="card-text"><small class="text-muted">Appointed on {{item['appointmentDateTime']}}</small></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-          </div>
+    </div>
+    <div class="row" *ngIf="norecord">
+      <div class="col-12">
+        <div class="no-items">
+          <i class="fa fa-cart-arrow-down" style="margin-top: -4%;" aria-hidden="true"></i>&nbsp;
+          <p style="font-weight: 600;color: gray;font-size: 18px;">No Appointment has been done so far.</p>
         </div>
-</div>
+      </div>
+    </div>
+  </div>
 
-<div class="row" *ngIf="clickedinduvidualList" style="margin-top: 5%;">
-  <div class="col-12">
-      <div class="card">
-          <img src="{{induvidualList['vendor']['vendorImgUrl']}}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title" style="text-align: center;">{{induvidualList['vendor']['vendorName']}}</h5>
-            <div class="row">
-              <div class="col-6">
-                  <b>Vendor Address : </b>
-              </div>
-              <div class="col-6">
-                  <p class="card-text"> {{induvidualList['vendor']['vendorAddress']}}</p>
+
+
+  <div *ngIf="clickedcurrentstatus && !clickedinduvidualList">
+    <div class="row">
+      <div class="col-12">
+        <span class="ordertext">
+          <h5 style=" margin-top: 2%;color:#5B86E5;">Current Appointment Status</h5>
+        </span>
+      </div>
+    </div>
+    <div class="row" *ngFor="let item of getAllAppointment,let i = index">
+      <div class="col-12">
+        <div class="card mb-3" *ngIf="item['status'] == 'In Progress'" style="max-width: 540px;">
+          <div class="row no-gutters">
+            <div class="col-4 imgcenter">
+              <img src="{{item['vendor']['vendorImgUrl']}}" class="card-img" alt="...">
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title textunderline" (click)="a(i)">{{item['vendor']['vendorName']}}</h5>
+                <p class="card-text">
+                  <b> Address:</b> {{item['vendor']['vendorAddress']}} </p>
+                <p>
+                  <b>Vehicle Brand:</b> {{item['vehicleBrand']}} </p>
+                <p>
+                  <b>Vehicle Model: </b> {{item['vehicleModel']}} </p>
+                <p class="card-text">
+                  <small class="text-muted">Appointed on {{item['appointmentDateTime']}}</small>
+                </p>
               </div>
             </div>
-           
-           
-           
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="!norecord">
+      <div class="col-12">
+        <div class="no-items">
+          <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>&nbsp;
+          <p style="font-weight: 600;color: gray;font-size: 18px;">No Current status available.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="clickedinduvidualList" style="margin-top: 5%;">
+    <div class="col-12">
+      <div class="card">
+        <img src="{{induvidualList['vendor']['vendorImgUrl']}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center;">{{induvidualList['vendor']['vendorName']}}</h5>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vendor Address : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['vendor']['vendorAddress']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Phone Number : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['vendor']['vendorPhonenumber']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vehicle : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text" *ngIf="induvidualList['vehicle'] === 'Car'">
+                <img src="../../assets/Images/caroriginal.png" alt="car image" width="100" height="100">
+              </p>
+              <p class="card-text" *ngIf="induvidualList['vehicle'] === 'Bike'">
+                <img src="../../assets/Images/bikeoriginal.png" alt="bike image" width="100" height="100">
+              </p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vehicle Brand : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['vehicleBrand']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vehicle Model : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['vehicleModel']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vehicle Type : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['vehicleType']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+            <div class="col-6 imgcenter">
+              <b>Vehicle Number : </b>
+            </div>
+            <div class="col-6">
+              <p class="card-text"> {{induvidualList['carBikeNumberPlate']}}</p>
+            </div>
+          </div>
+          <div class="row marginbottom">
+              <div class="col-6 imgcenter">
+                <b>Status : </b>
+              </div>
+              <div class="col-6">
+                <p class="card-text"> {{induvidualList['status']}}</p>
+              </div>
+            </div>
+<div class="row">
+  <div class="col-12">
+      <p-steps [model]="items" [(activeIndex)]="value"></p-steps>
   </div>
 </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 </div>
 
 <!-- // address: "Bajana kovil street perambur chennai"
-// appointmentDateTime: "04/12/2019 01:30PM"
-// appointmentId: "20191218AP12211"
-// carBikeNumberPlate: "TN 05 BD 1111"
-// landmark: "Revathi ReadyMades"
-// packages: "Gold"
-// partners: null
-// pickUpTime: "8.30PM"
-// pincode: "600011"
-// status: "In Progress"
-// user: {userId: "20191214182845", userName: "Hema", password: "Hemacsr", confirmPassword: "Hemacsr", emailId: "hemacsr245@gmail.com", …}
-// vehicle: "Car"
-// vehicleBrand: "Maruti Suzuki"
-// vehicleModel: "Swift Desire zxi"
-// vehicleType: "Hatch Back"
-// vendor:
-// vendorAddress: "Subash chandra bose street perambur,chennai"
-// vendorId: "VD2019121518753"
-// vendorImgUrl: "https://owncarservicw.s3.ap-south-1.amazonaws.com/vendor2"
-// vendorName: "Sugumar Car wash"
-// vendorPhonenumber: "8189894739"
-// vendorPincode: "600011" -->
+   // appointmentDateTime: "04/12/2019 01:30PM"
+   // appointmentId: "20191218AP12211"
+   // carBikeNumberPlate: "TN 05 BD 1111"
+   // landmark: "Revathi ReadyMades"
+   // packages: "Gold"
+   // partners: null
+   // pickUpTime: "8.30PM"
+   // pincode: "600011"
+   // status: "In Progress"
+   // user: {userId: "20191214182845", userName: "Hema", password: "Hemacsr", confirmPassword: "Hemacsr", emailId: "hemacsr245@gmail.com", …}
+   // vehicle: "Car"
+   // vehicleBrand: "Maruti Suzuki"
+   // vehicleModel: "Swift Desire zxi"
+   // vehicleType: "Hatch Back"
+   // vendor:
+   // vendorAddress: "Subash chandra bose street perambur,chennai"
+   // vendorId: "VD2019121518753"
+   // vendorImgUrl: "https://owncarservicw.s3.ap-south-1.amazonaws.com/vendor2"
+   // vendorName: "Sugumar Car wash"
+   // vendorPhonenumber: "8189894739"
+   // vendorPincode: "600011" -->
