@@ -1,0 +1,436 @@
+package com.ocs.owncarservice.Controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ocs.owncarservice.Entity.AppointmentTable;
+import com.ocs.owncarservice.ResponseMessage.ResponseMessage;
+import com.ocs.owncarservice.Service.AppointmentImpl;
+
+@RestController
+@RequestMapping(value="/Appointment")
+@CrossOrigin("*")
+public class AppointmentController {
+
+	@Autowired
+	AppointmentImpl apService;
+	
+	@PostMapping(value="/CreateAppointment")
+	public ResponseEntity<?> CreateAppointment(@RequestBody AppointmentTable appoint){
+		try {
+			AppointmentTable table = apService.CreateAppointment(appoint);
+			return new ResponseEntity<AppointmentTable>(table,HttpStatus.OK);
+		}catch(Exception e) {
+			ResponseMessage exceptions = new ResponseMessage();
+			exceptions.setStatus("Failed");
+			exceptions.setResponseMsg(e.getMessage());
+			return new ResponseEntity<ResponseMessage>(exceptions,HttpStatus.BAD_GATEWAY);
+		}
+	}
+	
+	
+	@GetMapping(value="/GetAppointmentsByDates/{Dates}")
+	public ResponseEntity<?> getAppointments(@PathVariable("Dates") String Dates){
+		ResponseMessage response = new ResponseMessage();
+		try {
+			if(Dates!=null) {
+				String[] Date = Dates.split("-");
+				Dates = Date[0]+"/"+Date[1]+"/"+Date[2];
+				return new ResponseEntity<List<AppointmentTable>>(apService.getAppointments(Dates),HttpStatus.OK);
+			}
+		}catch(Exception e) {
+		
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@GetMapping(value="/GetAppointmentsByUserId/{UserId}")
+	public ResponseEntity<?> getAllAppointmentsByUserId(@PathVariable("UserId") String UserId){
+		ResponseMessage response = new ResponseMessage();
+		try {
+			if(UserId!=null) {
+				
+				return new ResponseEntity<List<AppointmentTable>>(apService.getAllAppointments(UserId),HttpStatus.OK);
+			}
+		}catch(Exception e) {
+		
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
+	@PutMapping(value="/updateAppointments")
+	public ResponseEntity<?> updatesAppointments(@RequestBody AppointmentTable tables){
+		ResponseMessage response = new ResponseMessage();
+		try {
+			if(tables!=null) {
+				
+				return new ResponseEntity<AppointmentTable>(apService.updateAppointments(tables),HttpStatus.OK);
+			}
+		}catch(Exception e) {
+		
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
+}
+
+
+
+------------------------------------------------------
+package com.ocs.owncarservice.Entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@Entity
+@Table(name="appointment")
+public class AppointmentTable {
+    
+	@Id
+	@Column(name="appointmentId")
+	private String appointmentId;
+	@Column(name="pincode")
+	private String pincode;
+	@Column(name="vehicle")
+	private String vehicle;
+	@Column(name="vehicleType")
+	private String vehicleType;
+	@Column(name="vehicleBrand")
+	private String vehicleBrand;
+	@Column(name="vehicleModel")
+	private String vehicleModel;
+	@Column(name="packages")
+	private String packages;
+	@Column(name="address")
+	private String address;
+	@Column(name="landmark")
+	private String landmark;
+	@Column(name="pickUpTime")
+	private String pickUpTime;
+	@Column(name="appointmentDateTime")
+	private String appointmentDateTime;
+	@Column(name="carBikeNumberPlate")
+	private String carBikeNumberPlate;
+	@Column(name="status")
+	private String status;
+	
+	@Column(name="activeIndex")
+	private String activeIndex;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private UserRegistration user;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private Vendor vendor;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private DeliveryPartner partners;
+	
+	
+	
+	public String getActiveIndex() {
+		return activeIndex;
+	}
+	public void setActiveIndex(String activeIndex) {
+		this.activeIndex = activeIndex;
+	}
+	public String getVehicle() {
+		return vehicle;
+	}
+	public void setVehicle(String vehicle) {
+		this.vehicle = vehicle;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public UserRegistration getUser() {
+		return user;
+	}
+	public void setUser(UserRegistration user) {
+		this.user = user;
+	}
+	public Vendor getVendor() {
+		return vendor;
+	}
+	public void setVendor(Vendor vendor) {
+		this.vendor = vendor;
+	}
+	public DeliveryPartner getPartners() {
+		return partners;
+	}
+	public void setPartners(DeliveryPartner partners) {
+		this.partners = partners;
+	}
+	public String getAppointmentId() {
+		return appointmentId;
+	}
+	public void setAppointmentId(String appointmentId) {
+		this.appointmentId = appointmentId;
+	}
+	public String getPincode() {
+		return pincode;
+	}
+	public void setPincode(String pincode) {
+		this.pincode = pincode;
+	}
+	public String getVehicleType() {
+		return vehicleType;
+	}
+	public void setVehicleType(String vehicleType) {
+		this.vehicleType = vehicleType;
+	}
+	public String getVehicleBrand() {
+		return vehicleBrand;
+	}
+	public void setVehicleBrand(String vehicleBrand) {
+		this.vehicleBrand = vehicleBrand;
+	}
+	public String getVehicleModel() {
+		return vehicleModel;
+	}
+	public void setVehicleModel(String vehicleModel) {
+		this.vehicleModel = vehicleModel;
+	}
+	public String getPackages() {
+		return packages;
+	}
+	public void setPackages(String packages) {
+		this.packages = packages;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getLandmark() {
+		return landmark;
+	}
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+	public String getPickUpTime() {
+		return pickUpTime;
+	}
+	public void setPickUpTime(String pickUpTime) {
+		this.pickUpTime = pickUpTime;
+	}
+	public String getAppointmentDateTime() {
+		return appointmentDateTime;
+	}
+	public void setAppointmentDateTime(String appointmentDateTime) {
+		this.appointmentDateTime = appointmentDateTime;
+	}
+	public String getCarBikeNumberPlate() {
+		return carBikeNumberPlate;
+	}
+	public void setCarBikeNumberPlate(String carBikeNumberPlate) {
+		this.carBikeNumberPlate = carBikeNumberPlate;
+	}
+
+	
+	
+}
+-------------------------------------------------------
+package com.ocs.owncarservice.Repo;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.ocs.owncarservice.Entity.AppointmentTable;
+import com.ocs.owncarservice.Entity.DeliveryPartner;
+@Repository
+public interface AppointmentRepo extends JpaRepository<AppointmentTable, String> {
+
+	@Query("Select a from AppointmentTable a where a.vendor.vendorId = :vendorId and a.appointmentDateTime = :currentDate")
+	List<AppointmentTable> findbyappointmentdate(@Param("vendorId") String vendorId,@Param("currentDate") String currentDate);
+	
+	
+	@Query("Select u from AppointmentTable u where u.user.userId = :userId")
+	List<AppointmentTable> findByUserId(@Param("userId") String userId);
+	
+	@Query("Select u from AppointmentTable u where u.partners.partnerId = :userId")
+	List<AppointmentTable> findByPartnerIds(@Param("userId") String userId);
+	
+	
+}
+-----------------------------------------------------
+
+package com.ocs.owncarservice.Controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ocs.owncarservice.Entity.AppointmentTable;
+import com.ocs.owncarservice.Entity.Vendor;
+import com.ocs.owncarservice.ResponseMessage.ResponseMessage;
+import com.ocs.owncarservice.Service.VendorImpl;
+
+@RestController
+@RequestMapping(value="/Vendor")
+@CrossOrigin("*")
+public class VendorController {
+
+	@Autowired
+	VendorImpl vService;
+
+	
+	@PostMapping(value="/CreateVendor")
+	public ResponseEntity<?> CreateAppointment(@RequestBody Vendor appoint){
+		try {
+			Vendor vendor = vService.createNewVendor(appoint);
+			return new ResponseEntity<Vendor>(vendor,HttpStatus.OK);
+		}catch(Exception e) {
+			ResponseMessage exceptions = new ResponseMessage();
+			exceptions.setStatus("Failed");
+			exceptions.setResponseMsg(e.getMessage());
+			return new ResponseEntity<ResponseMessage>(exceptions,HttpStatus.BAD_GATEWAY);
+		}
+	}
+	
+	@GetMapping(value="/GetAllPackages")
+	public ResponseEntity<?> getAllPackage(){
+		ResponseMessage response = new ResponseMessage();
+		try {
+				return new ResponseEntity<List<com.ocs.owncarservice.Entity.Package>>(vService.getAllPackages(),HttpStatus.OK);
+			}
+		catch(Exception e) {
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@GetMapping(value="/GetVendorsByUserId/{UserId}")
+	public ResponseEntity<?> getAllVendorsByUserId(@PathVariable("UserId") String UserId){
+		ResponseMessage response = new ResponseMessage();
+		try {
+			if(UserId!=null) {
+				
+				return new ResponseEntity<List<Vendor>>(vService.getVendorsById(UserId),HttpStatus.OK);
+			}
+		}catch(Exception e) {
+		
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
+	@GetMapping(value="/GetVendorsByUserIdDate/{UserId}/{currentDate}")
+	public ResponseEntity<?> getAllVendorsByUserId(@PathVariable("UserId") String UserId,@PathVariable("currentDate") String currentDate){
+		ResponseMessage response = new ResponseMessage();
+		try {
+			if(UserId!=null && currentDate!= null) {
+				System.out.println(UserId);
+				System.out.println(currentDate);
+				return new ResponseEntity<List<AppointmentTable>>(vService.getVendorsByIdDate(UserId,currentDate),HttpStatus.OK);
+			}
+		}catch(Exception e) {
+		
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+
+	@GetMapping(value="/GetAllVendor")
+	public ResponseEntity<?> getAllVendor(){
+		ResponseMessage response = new ResponseMessage();
+		try {
+				return new ResponseEntity<List<Vendor>>(vService.getAllVendors(),HttpStatus.OK);
+			}
+		catch(Exception e) {
+		response.setStatus("Error");
+		response.setResponseMsg(e.getMessage());
+		}
+		return new ResponseEntity<ResponseMessage>(response,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
+	
+}
+-------------------------------
+@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
+	@JsonIgnore
+	private List<Vendor> vendor = new ArrayList<>();
+-----------------------------------
+@ManyToOne(fetch=FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	private UserRegistration user;
+------------------------------------
+
+Vendor createNewVendor(Vendor newVendor);
+	List<Package> getAllPackages();
+	List<Vendor> getAllVendors();
+	List<Vendor> getVendorsById(String userId);
+	List<AppointmentTable> getVendorsByIdDate(String userId,String currentDate);
+----------------------------------------
+
+	@Override
+	public List<Vendor> getVendorsById(String userId) {
+		List<Vendor> vendors  = vRepo.findByVendorUserIds(userId) ;
+		return vendors != null ? vendors :null;
+	}
+
+
+	@Override
+	public List<AppointmentTable> getVendorsByIdDate(String userId, String currentDate) {
+		List<AppointmentTable> listOfOrders = aRepo.findbyappointmentdate(userId, currentDate);
+		return listOfOrders!=null?listOfOrders: null;
+	}
+---------------------------------------
