@@ -1,0 +1,123 @@
+<div class="container" (clickOutside)="abc($event)">
+
+------------------------------------
+click-outside.directive
+----
+import { Directive, ElementRef, Output, EventEmitter, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[clickOutside]'
+})
+export class ClickOutsideDirective {
+
+  constructor(private _elementRef: ElementRef) { }
+
+  @Output() clickOutside: EventEmitter<any> = new EventEmitter();
+
+  @HostListener('document:click', ['$event.target']) onMouseEnter(targetElement) {
+    const clickedInside = this._elementRef.nativeElement.contains(targetElement);
+    if (!clickedInside) {
+      this.clickOutside.emit(event);
+      console.log("hahaha");
+    }
+  }
+}
+
+module
+---------------
+import { ClickOutsideDirective } from './click-outside.directive';
+ClickOutsideDirective
+  exports: [ClickOutsideDirective],
+
+nav.ts
+----------
+abc(){
+  this.toggleHamburger = false;
+  console.log("aaaaaa");
+}
+
+home.html
+-------------
+  <span style="display: flex;">
+          <input type="radio" id="bikeicon" name="vehicle">
+          <label for="bikeicon">
+          <img class="clickimg" src="../../assets/Images/bikeoriginal.png" alt="bike Icon" (click)="vehicle('bike')" height="80" width="80">
+          </label>
+          <input type="radio" id="caricon" name="vehicle">
+          <label for="caricon">
+              <img class="clickimg" style="margin-left: 4%;" src="../../assets/Images/caroriginal.png" alt="car Icon" (click)="vehicle('car')"
+              height="80" width="80"> 
+        </label>
+   
+        </span>
+
+home.css
+---------------
+input[type="radio"][id="bikeicon"] {
+    display: none;
+  }
+
+  input[type="radio"][id="caricon"] {
+    display: none;
+  }
+
+#bikeicon:checked+label{
+    border: 2px solid #36D1DC;
+   
+      }
+
+  #caricon:checked+label{
+    border: 2px solid #36D1DC;
+  }
+
+nav.css
+---------
+  .liststyle{
+    /* text-align: center; */
+    margin-top: 3%;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 5px;
+    margin-right: 2%;
+    color: white;
+}
+
+ul li {
+    list-style: none;
+    /* text-align: center; */
+    margin-top: 3%;
+    font-weight: 600;
+    font-size: 20px;
+    color: white;
+    margin-right: 2%;
+    border-bottom: 1px solid white;
+    padding: 10px;
+    
+}
+  .iconSize{
+    margin-left: 5%;
+  
+  }
+
+nav.json
+-----
+{
+    
+    "nav_name":"Logout",
+    
+    "nav_link":"/login",
+    
+    "nav_icons":"<i class=\"fas fa-sign-out-alt\"></i>"
+    
+    }
+
+
+index.html
+---------
+ <script src="https://kit.fontawesome.com/e2a36cb7ac.js" crossorigin="anonymous"></script>
+
+nav.html
+--------
+ <li style="display: flex;" routerLink="{{data['nav_link']}}" (click)="close(data)" class="liststyle">{{data['nav_name']}} 
+              <div class="iconSize" [innerHtml]="data['nav_icons']"></div>
+            </li>
